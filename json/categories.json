@@ -1,0 +1,10 @@
+[
+  { "id": "cimento", "name": "Cimento, Areia & Brita", "icon": "layers" },
+  { "id": "ferro", "name": "Ferro, Aço & Malhas", "icon": "shield" },
+  { "id": "blocos", "name": "Blocos, Tijolos & Pavês", "icon": "box" },
+  { "id": "hidraulica", "name": "Tubos & Conexões Hidráulicas", "icon": "droplet" },
+  { "id": "eletrica", "name": "Material Elétrico & Iluminação", "icon": "zap" },
+  { "id": "tintas", "name": "Tintas, Vernizes & Impermeabilizantes", "icon": "brush" },
+  { "id": "cobertura", "name": "Chapas, Vigas & Cobertura", "icon": "home" },
+  { "id": "ferramentas", "name": "Ferramentas & EPIs de Segurança", "icon": "wrench" }
+]

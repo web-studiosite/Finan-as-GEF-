@@ -1,0 +1,183 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GEF_Database_Schema",
+  "description": "Especificação Oficial das Tabelas do Supabase / PostgreSQL do Sistema GEF",
+  "tables": {
+    "stores": {
+      "columns": {
+        "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+        "name": "text NOT NULL",
+        "trade_name": "text",
+        "code": "text UNIQUE NOT NULL",
+        "cnpj_nif": "text",
+        "phone": "text",
+        "city": "text DEFAULT 'Maputo'",
+        "address": "text",
+        "plan_id": "text DEFAULT 'PRO'",
+        "active": "boolean DEFAULT true",
+        "acesso_ativo": "boolean DEFAULT true",
+        "data_fim_teste": "timestamptz",
+        "dias_teste_padrao": "integer DEFAULT 14",
+        "mensalidade": "numeric(12,2) DEFAULT 2500.00",
+        "created_at": "timestamptz DEFAULT now()"
+      }
+    },
+    "profiles": {
+      "columns": {
+        "id": "uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE",
+        "email": "text UNIQUE",
+        "full_name": "text NOT NULL",
+        "role": "text NOT NULL CHECK (role IN ('SUPERADMIN','ADMIN','GERENTE','OPERADOR_CAIXA','ESTOQUISTA','EMBAIXADOR'))",
+        "store_id": "uuid REFERENCES stores(id)",
+        "default_store_id": "uuid REFERENCES stores(id)",
+        "phone": "text",
+        "active": "boolean DEFAULT true",
+        "created_at": "timestamptz DEFAULT now()"
+      }
+    },
+    "products": {
+      "columns": {
+        "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+        "store_id": "uuid NOT NULL REFERENCES stores(id)",
+        "code": "text NOT NULL",
+        "barcode": "text",
+        "name": "text NOT NULL",
+        "category": "text NOT NULL",
+        "base_unit": "text NOT NULL",
+        "cost_price_base": "numeric(12,2) NOT NULL DEFAULT 0",
+        "sale_price_base": "numeric(12,2) NOT NULL DEFAULT 0",
+        "current_stock_base": "numeric(12,3) NOT NULL DEFAULT 0",
+        "min_stock_alert": "numeric(12,3) DEFAULT 5",
+        "fefo_expiry_date": "date",
+        "batch_number": "text",
+        "active": "boolean DEFAULT true",
+        "created_at": "timestamptz DEFAULT now()",
+        "updated_at": "timestamptz DEFAULT now()"
+      }
+    },
+    "product_conversions": {
+      "columns": {
+        "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+        "product_id": "uuid NOT NULL REFERENCES products(id) ON DELETE CASCADE",
+        "unit_name": "text NOT NULL",
+        "factor_to_base": "numeric(12,4) NOT NULL",
+        "sale_price": "numeric(12,2) NOT NULL",
+        "barcode": "text",
+        "is_default_sale": "boolean DEFAULT false"
+      }
+    },
+    "sales": {
+      "columns": {
+        "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+        "store_id": "uuid NOT NULL REFERENCES stores(id)",
+        "invoice_number": "text NOT NULL",
+        "customer_id": "uuid REFERENCES customers(id)",
+        "customer_name": "text NOT NULL DEFAULT 'Consumidor Final'",
+        "user_id": "uuid REFERENCES profiles(id)",
+        "operator_name": "text NOT NULL DEFAULT 'GEF'",
+        "total_amount": "numeric(12,2) NOT NULL",
+        "discount_amount": "numeric(12,2) DEFAULT 0",
+        "net_amount": "numeric(12,2) NOT NULL",
+        "payment_method": "text NOT NULL",
+        "status": "text NOT NULL DEFAULT 'CONCLUIDA' CHECK (status IN ('CONCLUIDA','CANCELADA'))",
+        "notes": "text",
+        "cancellation_reason": "text",
+        "cancelled_by": "text",
+        "cancelled_at": "timestamptz",
+        "created_at": "timestamptz DEFAULT now()"
+      }
+    },
+    "sale_items": {
+      "columns": {
+        "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+        "sale_id": "uuid NOT NULL REFERENCES sales(id) ON DELETE CASCADE",
+        "product_id": "uuid NOT NULL REFERENCES products(id)",
+        "product_name": "text NOT NULL",
+        "sold_unit": "text NOT NULL",
+        "conversion_factor": "numeric(12,4) NOT NULL DEFAULT 1",
+        "quantity_sold": "numeric(12,3) NOT NULL",
+        "quantity_base": "numeric(12,3) NOT NULL",
+        "unit_price": "numeric(12,2) NOT NULL",
+        "total_price": "numeric(12,2) NOT NULL",
+        "unit_cost_base": "numeric(12,2) NOT NULL DEFAULT 0"
+      }
+    },
+    "stock_movements": {
+      "columns": {
+        "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+        "store_id": "uuid NOT NULL REFERENCES stores(id)",
+        "product_id": "uuid NOT NULL REFERENCES products(id)",
+        "type": "text NOT NULL CHECK (type IN ('ENTRADA','SAIDA_VENDA','ESTORNO_VENDA','AJUSTE_PERDA','AJUSTE_INVENTARIO','TRANSFERENCIA'))",
+        "quantity_base": "numeric(12,3) NOT NULL",
+        "stock_before": "numeric(12,3) NOT NULL",
+        "stock_after": "numeric(12,3) NOT NULL",
+        "batch_number": "text",
+        "expiry_date": "date",
+        "operator_name": "text NOT NULL DEFAULT 'GEF'",
+        "reference_id": "text",
+        "reason": "text",
+        "created_at": "timestamptz DEFAULT now()"
+      }
+    },
+    "customers": {
+      "columns": {
+        "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+        "store_id": "uuid NOT NULL REFERENCES stores(id)",
+        "name": "text NOT NULL",
+        "phone": "text",
+        "nuit": "text",
+        "address": "text",
+        "credit_limit": "numeric(12,2) DEFAULT 0",
+        "current_debt": "numeric(12,2) DEFAULT 0",
+        "active": "boolean DEFAULT true",
+        "created_at": "timestamptz DEFAULT now()"
+      }
+    },
+    "suppliers": {
+      "columns": {
+        "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+        "store_id": "uuid NOT NULL REFERENCES stores(id)",
+        "name": "text NOT NULL",
+        "trade_name": "text",
+        "phone": "text",
+        "email": "text",
+        "nuit": "text",
+        "city": "text",
+        "category": "text",
+        "active": "boolean DEFAULT true",
+        "created_at": "timestamptz DEFAULT now()"
+      }
+    },
+    "cashier_sessions": {
+      "columns": {
+        "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+        "store_id": "uuid NOT NULL REFERENCES stores(id)",
+        "operator_id": "uuid REFERENCES profiles(id)",
+        "operator_name": "text NOT NULL DEFAULT 'GEF'",
+        "terminal": "text DEFAULT 'CAIXA-01'",
+        "status": "text NOT NULL DEFAULT 'ABERTO' CHECK (status IN ('ABERTO','FECHADO'))",
+        "opening_balance": "numeric(12,2) NOT NULL DEFAULT 0",
+        "closing_balance": "numeric(12,2)",
+        "opened_at": "timestamptz DEFAULT now()",
+        "closed_at": "timestamptz",
+        "total_cash_sales": "numeric(12,2) DEFAULT 0",
+        "total_pos_sales": "numeric(12,2) DEFAULT 0",
+        "total_sangrias": "numeric(12,2) DEFAULT 0",
+        "total_suprimentos": "numeric(12,2) DEFAULT 0"
+      }
+    },
+    "audit_logs": {
+      "columns": {
+        "id": "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+        "store_id": "uuid REFERENCES stores(id)",
+        "user_id": "uuid REFERENCES profiles(id)",
+        "operator_name": "text NOT NULL DEFAULT 'GEF'",
+        "action": "text NOT NULL",
+        "entity": "text NOT NULL",
+        "record_id": "text",
+        "details": "jsonb",
+        "created_at": "timestamptz DEFAULT now()"
+      }
+    }
+  }
+}

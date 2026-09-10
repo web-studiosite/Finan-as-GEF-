@@ -1,0 +1,13 @@
+[
+  { "symbol": "UN", "name": "Unidade / Peça", "type": "count" },
+  { "symbol": "SC", "name": "Saco (50kg / 25kg)", "type": "weight" },
+  { "symbol": "KG", "name": "Quilograma", "type": "weight" },
+  { "symbol": "TON", "name": "Tonelada", "type": "weight" },
+  { "symbol": "M3", "name": "Metro Cúbico (Carrada)", "type": "volume" },
+  { "symbol": "M2", "name": "Metro Quadrado", "type": "area" },
+  { "symbol": "M", "name": "Metro Linear", "type": "length" },
+  { "symbol": "BARRA", "name": "Barra (12m / 6m)", "type": "length" },
+  { "symbol": "CX", "name": "Caixa", "type": "pack" },
+  { "symbol": "LATA", "name": "Lata (18L / 20L)", "type": "volume" },
+  { "symbol": "GL", "name": "Galão (3.6L / 5L)", "type": "volume" }
+]
