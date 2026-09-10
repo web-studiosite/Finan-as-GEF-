@@ -1,0 +1,98 @@
+/**
+ * GEF – GESTÃO EMPRESARIAL E FINANCEIRA
+ * Folha de Estilos Corporativa (css/style.css)
+ * Suporte a impressão térmica de 80mm/58mm, barras de rolagem finas e animações de interface
+ */
+
+@charset "UTF-8";
+
+/* Reset e Configurações Globais */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #020617; /* slate-950 */
+  color: #f8fafc; /* slate-50 */
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tipografia Monoespacial para Moedas, Códigos de Barras e Números */
+.font-mono, kbd, code, .receipt-text {
+  font-family: 'JetBrains Mono', monospace, Consolas, 'Liberation Mono', Menlo, Courier;
+}
+
+/* Barras de Rolagem Minimalistas */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #f97316;
+}
+
+/* Efeito de Seleção */
+::selection {
+  background-color: rgba(249, 115, 22, 0.35);
+  color: #fdba74;
+}
+
+/* Regras de Impressão Térmica de Recibo (80mm e 58mm) */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #thermalReceiptContent, #thermalReceiptContent * {
+    visibility: visible;
+  }
+
+  #thermalReceiptContent {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 4mm !important;
+    color: #000 !important;
+    background: #fff !important;
+    font-size: 11px !important;
+    line-height: 1.25 !important;
+    box-shadow: none !important;
+  }
+
+  @page {
+    margin: 0;
+    size: auto;
+  }
+}
+
+/* Animações e Transições Suaves */
+.fade-in {
+  animation: fadeIn 0.2s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
